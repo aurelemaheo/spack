@@ -47,7 +47,6 @@ class Tau(Package):
             description='Downloads and builds various dependencies')
     variant('scorep', default=False, description='Activates SCOREP support')
     variant('scalasca', default=False, description='Activates SCALASCA')
-    variant('vampirtrace', default=False, description='Activates VampirTrace Tracing package')
     variant('otf', default=False, description='Activates support of Open Trace Format (OTF)')
     variant('likwid', default=False, description='Activates LIKWID support')
     variant('openmp', default=False, description='Use OpenMP threads')
@@ -73,7 +72,6 @@ class Tau(Package):
     depends_on('pdt')  # Required for TAU instrumentation
     depends_on('scorep', when='+scorep')
     depends_on('scalasca', when='+scalasca')
-    depends_on('vampirtrace', when='+vampirtrace')
     depends_on('otf2', when='+otf')
     depends_on('likwid', when='+likwid')
     depends_on('binutils', when='~download')
@@ -140,9 +138,6 @@ class Tau(Package):
 
         if '+scalasca' in spec:
             options.append("-scalasca=%s" % spec['scalasca'].prefix)
-
-        if '+vampirtrace' in spec:
-            options.append("-vampirtrace=%s" % spec['vampirtrace'].prefix)
 
         if '+otf' in spec:
             options.append("-otf=%s" % spec['otf'].prefix)

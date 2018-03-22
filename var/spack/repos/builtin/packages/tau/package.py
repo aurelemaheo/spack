@@ -60,6 +60,8 @@ class Tau(Package):
             description=' Generate profiles with MPI communicator info')
     variant('shmem', default=False,
              description='Activates SHMEM support')
+    variant('gasnet', default=False,
+             description='Activates GASNET support')
     variant('cuda', default=False,
              description='Activates CUDA support')
     variant('beacon', default=False, description='Activates BEACON support')
@@ -78,6 +80,7 @@ class Tau(Package):
     depends_on('libunwind', when='~download')
     depends_on('mpi', when='+mpi')
     depends_on('cuda', when='+cuda')
+    depends_on('gasnet', when='+gasnet')
 
     def set_compiler_options(self):
 
@@ -159,9 +162,11 @@ class Tau(Package):
         if '+shmem' in spec:
             options.append('-shmem')
 
+        if '+gasnet' in spec:
+            options.append('-gasnet')
+
         if '+cuda' in spec:
             options.append('-cuda')
-
 
         if '+phase' in spec:
             options.append('-PROFILEPHASE')

@@ -43,7 +43,7 @@ class Binutils(AutotoolsPackage):
     variant('plugins', default=False,
             description="enable plugins, needed for gold linker")
     variant('gold', default=True, description="build the gold linker")
-    variant('libiberty', default=False, description='Also install libiberty.')
+    variant('libiberty', default=True, description='Also install libiberty.')
 
     patch('cr16.patch')
     patch('update_symbol-2.26.patch', when='@2.26')

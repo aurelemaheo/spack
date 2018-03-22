@@ -46,21 +46,38 @@ class Tau(Package):
     variant('download', default=False,
             description='Downloads and builds various dependencies')
     variant('scorep', default=False, description='Activates SCOREP support')
-    variant('openmp', default=True, description='Use OpenMP threads')
+    variant('scalasca', default=False, description='Activates SCALASCA')
+    variant('vampirtrace', default=False, description='Activates VampirTrace Tracing package')
+    variant('otf', default=False, description='Activates support of Open Trace Format (OTF)')
+    variant('likwid', default=False, description='Activates LIKWID support')
+    variant('openmp', default=False, description='Use OpenMP threads')
+    variant('ompt', default=False, description='Activates OMPT instrumentation')
+    variant('opari', default=False, description='Activates Opari2 instrumentation')
     variant('mpi', default=True,
             description='Specify use of TAU MPI wrapper library')
     variant('phase', default=True, description='Generate phase based profiles')
     variant('comm', default=True,
             description=' Generate profiles with MPI communicator info')
-
+    variant('shmem', default=False,
+             description='Activates SHMEM support')
+    variant('cuda', default=False,
+             description='Activates CUDA support')
+    variant('beacon', default=False, description='Activates BEACON support')
+   
     # TODO : Try to build direct OTF2 support? Some parts of the OTF support
     # TODO : library in TAU are non-conformant,
     # TODO : and fail at compile-time. Further, SCOREP is compiled with OTF2
     # support.
     depends_on('pdt')  # Required for TAU instrumentation
     depends_on('scorep', when='+scorep')
+    depends_on('scalasca', when='+scalasca')
+    depends_on('vampirtrace', when='+vampirtrace')
+    depends_on('otf2', when='+otf')
+    depends_on('likwid', when='+likwid')
     depends_on('binutils', when='~download')
+    depends_on('libunwind', when='~download')
     depends_on('mpi', when='+mpi')
+    depends_on('cuda', when='+cuda')
 
     def set_compiler_options(self):
 
@@ -108,21 +125,43 @@ class Tau(Package):
                    "-pdt=%s" % spec['pdt'].prefix]
         # If download is active, download and build suggested dependencies
         if '+download' in spec:
-            options.extend(['-bfd=download',
-                            '-unwind=download',
-                            '-asmdex=download'])
+            options.extend(['-bfd=download'])
+            options.extend(['-unwind=download'])
         else:
             options.extend(["-bfd=%s" % spec['binutils'].prefix])
+            options.extend(["-unwind=%s" % spec['libunwind'].prefix])
             # TODO : unwind and asmdex are still missing
 
         if '+scorep' in spec:
             options.append("-scorep=%s" % spec['scorep'].prefix)
 
+        if '+scalasca' in spec:
+            options.append("-scalasca=%s" % spec['scalasca'].prefix)
+
+        if '+vampirtrace' in spec:
+            options.append("-vampirtrace=%s" % spec['vampirtrace'].prefix)
+
+        if '+otf' in spec:
+            options.append("-otf=%s" % spec['otf'].prefix)
+
+        if '+likwid' in spec:
+            options.append("-likwid=%s" % spec['likwid'].prefix)
+
         if '+openmp' in spec:
             options.append('-openmp')
 
+        if '+opari' in spec:
+            options.append('-opari')
+
         if '+mpi' in spec:
             options.append('-mpi')
+
+        if '+shmem' in spec:
+            options.append('-shmem')
+
+        if '+cuda' in spec:
+            options.append('-cuda')
+
 
         if '+phase' in spec:
             options.append('-PROFILEPHASE')

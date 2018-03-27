@@ -53,7 +53,7 @@ class Binutils(AutotoolsPackage):
     depends_on('m4', type='build')
     depends_on('flex', type='build')
     depends_on('bison', type='build')
-    depends_on('gettext')
+    #depends_on('gettext')
 
     def configure_args(self):
         spec = self.spec

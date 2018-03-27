@@ -35,8 +35,9 @@ class Tau(Package):
     """
 
     homepage = "http://www.cs.uoregon.edu/research/tau"
-    url      = "https://www.cs.uoregon.edu/research/tau/tau_releases/tau-2.25.tar.gz"
+    url      = "https://www.cs.uoregon.edu/research/tau/tau_releases/tau-2.27.tar.gz"
 
+    version('2.27', '76602d35fc96f546b5b9dcaf09158651')
     version('2.25', '46cd48fa3f3c4ce0197017b3158a2b43')
     version('2.24.1', '6635ece6d1f08215b02f5d0b3c1e971b')
     version('2.24', '57ce33539c187f2e5ec68f0367c76db4')
@@ -46,7 +47,6 @@ class Tau(Package):
     variant('download', default=False,
             description='Downloads and builds various dependencies')
     variant('scorep', default=False, description='Activates SCOREP support')
-    variant('scalasca', default=False, description='Activates SCALASCA')
     variant('otf', default=False, description='Activates support of Open Trace Format (OTF)')
     variant('likwid', default=False, description='Activates LIKWID support')
     variant('openmp', default=False, description='Use OpenMP threads')
@@ -71,8 +71,7 @@ class Tau(Package):
     # support.
     depends_on('pdt')  # Required for TAU instrumentation
     depends_on('scorep', when='+scorep')
-    depends_on('scalasca', when='+scalasca')
-    depends_on('otf2', when='+otf')
+    depends_on('otf2@2.1', when='+otf')
     depends_on('likwid', when='+likwid')
     depends_on('binutils', when='~download')
     depends_on('libunwind', when='~download')
@@ -136,11 +135,8 @@ class Tau(Package):
         if '+scorep' in spec:
             options.append("-scorep=%s" % spec['scorep'].prefix)
 
-        if '+scalasca' in spec:
-            options.append("-scalasca=%s" % spec['scalasca'].prefix)
-
         if '+otf' in spec:
-            options.append("-otf=%s" % spec['otf'].prefix)
+            options.append("-otf=%s" % spec['otf2'].prefix)
 
         if '+likwid' in spec:
             options.append("-likwid=%s" % spec['likwid'].prefix)
@@ -153,6 +149,8 @@ class Tau(Package):
 
         if '+mpi' in spec:
             options.append('-mpi')
+            options.append('-cc=mpicc')
+            options.append('-c++=mpicxx')
 
         if '+shmem' in spec:
             options.append('-shmem')
@@ -170,7 +168,7 @@ class Tau(Package):
             options.append('-PROFILECOMMUNICATORS')
 
         compiler_specific_options = self.set_compiler_options()
-        options.extend(compiler_specific_options)
+        #options.extend(compiler_specific_options)
         configure(*options)
         make("install")
 

@@ -79,6 +79,10 @@ class Tau(Package):
     depends_on('cuda', when='+cuda')
     depends_on('gasnet', when='+gasnet')
 
+    filter_compiler_wrappers(
+        'mpicc', 'mpicxx', 'mpif77', 'mpif90', 'mpifort', relative_root='bin'
+    )
+
     def set_compiler_options(self):
 
         useropt = ["-O2", self.rpath_args]
@@ -98,10 +102,17 @@ class Tau(Package):
         # PATH
         compiler_path = os.path.dirname(self.compiler.cc)
         os.environ['PATH'] = ':'.join([compiler_path, os.environ['PATH']])
+
+        #compiler_options = []
         compiler_options = ['-c++=%s' % self.compiler.cxx_names[0],
                             '-cc=%s' % self.compiler.cc_names[0]]
+
+        #compiler_options = ['-c++=mpicxx',
+        #                    '-cc=mpicc']
+
         if self.compiler.fc:
             compiler_options.append('-fortran=%s' % self.compiler.fc_names[0])
+
         ##########
 
         # Construct the string of custom compiler flags and append it to
@@ -149,8 +160,11 @@ class Tau(Package):
 
         if '+mpi' in spec:
             options.append('-mpi')
-            options.append('-cc=mpicc')
-            options.append('-c++=mpicxx')
+            #options.append('-cc=mpicc')
+            #options.append('-c++=mpicxx')
+            options.append('-mpiinc=/packages/mpich2/3.1.4_gcc-4.9.2/include')
+            options.append('-mpilib=/packages/mpich2/3.1.4_gcc-4.9.2/lib')
+            options.append('-mpilibrary=-lmpi')
 
         if '+shmem' in spec:
             options.append('-shmem')
@@ -167,8 +181,14 @@ class Tau(Package):
         if '+comm' in spec:
             options.append('-PROFILECOMMUNICATORS')
 
+        
+        #env['CC'] = spec['mpi'].mpicc
+        #env['CXX'] = spec['mpi'].mpicxx
+        #env['F77'] = spec['mpi'].mpif77
+        #env['FC'] = spec['mpi'].mpifc
+
         compiler_specific_options = self.set_compiler_options()
-        #options.extend(compiler_specific_options)
+        options.extend(compiler_specific_options)
         configure(*options)
         make("install")
 

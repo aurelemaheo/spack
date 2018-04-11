@@ -171,11 +171,21 @@ class Tau(Package):
             for MpiItem in listMpiOpts:
    
               if "-I" in MpiItem:
-                strMpiInc = MpiItem
+                if strMpiInc == "":
+                  strMpiInc = MpiItem[2:]
+                else:
+                  strMpiInc += " "
+                  strMpiInc += MpiItem[2:]
+
+                strMpiInc.replace("-I","")
                 print "MPI Include: ", strMpiInc
 
               if "-L" in MpiItem:
-                strMpiLibs = MpiItem
+                if strMpiLibs == "":
+                  strMpiLibs = MpiItem[2:]
+                else:
+                  strMpiLibs += " "
+                  strMpiLibs += MpiItem[2:]
                 print "MPI Libs path: ", strMpiLibs
   
               if "-l" in MpiItem:
@@ -183,9 +193,12 @@ class Tau(Package):
                 print "MPI Library: ", strMpiLibrary
 
             options.append('-mpi')
-            options.append('-mpiinc=/packages/mpich2/3.1.4_gcc-4.9.2/include')
-            options.append('-mpilib=/packages/mpich2/3.1.4_gcc-4.9.2/lib')
-            options.append('-mpilibrary=-lmpi')
+            #options.append('-mpiinc=/packages/mpich2/3.1.4_gcc-4.9.2/include')
+            options.append('-mpiinc='+strMpiInc)
+            #options.append('-mpilib=/packages/mpich2/3.1.4_gcc-4.9.2/lib')
+            options.append('-mpilib='+strMpiLibs)
+            #options.append('-mpilibrary=-lmpi')
+            options.append('-mpilibrary='+strMpiLibrary)
 
         if '+shmem' in spec:
             options.append('-shmem')

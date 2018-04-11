@@ -160,9 +160,9 @@ class Tau(Package):
 
         if '+mpi' in spec: 
             print "MPI in spec"
-            strMpiInc = ""
-            strMpiLibs = ""
-            strMpiLibrary = ""
+            strMpiIncTmp = ""
+            strMpiLibsTmp = ""
+            strMpiLibraryTmp = ""
             strMpi = os.popen('mpicc -show').read()
             print "mpicc -show: ", strMpi
             #parse_mpi_wrapper(strmpi) 
@@ -171,25 +171,30 @@ class Tau(Package):
             for MpiItem in listMpiOpts:
    
               if "-I" in MpiItem:
-                if strMpiInc == "":
-                  strMpiInc = MpiItem[2:]
+                if strMpiIncTmp == "":
+                  strMpiIncTmp = MpiItem[2:]
                 else:
-                  strMpiInc += " "
-                  strMpiInc += MpiItem[2:]
+                  strMpiIncTmp += " "
+                  strMpiIncTmp += MpiItem[2:]
 
-                strMpiInc.replace("-I","")
+                #strMpiInc.replace("-I","")
+                strMpiInc = '"' + strMpiIncTmp + '"'
                 print "MPI Include: ", strMpiInc
 
               if "-L" in MpiItem:
-                if strMpiLibs == "":
-                  strMpiLibs = MpiItem[2:]
+                if strMpiLibsTmp == "":
+                  strMpiLibsTmp = MpiItem[2:]
                 else:
-                  strMpiLibs += " "
-                  strMpiLibs += MpiItem[2:]
+                  strMpiLibsTmp += " "
+                  strMpiLibsTmp += MpiItem[2:]
+
+                strMpiLibs = '"' + strMpiLibsTmp + '"'
                 print "MPI Libs path: ", strMpiLibs
   
               if "-l" in MpiItem:
-                strMpiLibrary = MpiItem 
+                strMpiLibraryTmp = MpiItem 
+
+                strMpiLibrary = '"' + strMpiLibraryTmp + '"'
                 print "MPI Library: ", strMpiLibrary
 
             options.append('-mpi')

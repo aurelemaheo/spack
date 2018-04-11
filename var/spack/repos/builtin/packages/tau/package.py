@@ -33,7 +33,7 @@ class Tau(Package):
     analysis of parallel programs written in Fortran, C, C++, UPC,
     Java, Python.
     """
-
+    
     homepage = "http://www.cs.uoregon.edu/research/tau"
     url      = "https://www.cs.uoregon.edu/research/tau/tau_releases/tau-2.27.tar.gz"
 
@@ -104,8 +104,8 @@ class Tau(Package):
         os.environ['PATH'] = ':'.join([compiler_path, os.environ['PATH']])
 
         #compiler_options = []
-        compiler_options = ['-c++=%s' % self.compiler.cxx_names[0],
-                            '-cc=%s' % self.compiler.cc_names[0]]
+        compiler_options = ['-c++=%s' % self.compiler.cxx,
+                            '-cc=%s' % self.compiler.cc]
 
         #compiler_options = ['-c++=mpicxx',
         #                    '-cc=mpicc']
@@ -158,10 +158,31 @@ class Tau(Package):
         if '+opari' in spec:
             options.append('-opari')
 
-        if '+mpi' in spec:
+        if '+mpi' in spec: 
+            print "MPI in spec"
+            strMpiInc = ""
+            strMpiLibs = ""
+            strMpiLibrary = ""
+            strMpi = os.popen('mpicc -show').read()
+            print "mpicc -show: ", strMpi
+            #parse_mpi_wrapper(strmpi) 
+            listMpiOpts = strMpi.split()
+      
+            for MpiItem in listMpiOpts:
+   
+              if "-I" in MpiItem:
+                strMpiInc = MpiItem
+                print "MPI Include: ", strMpiInc
+
+              if "-L" in MpiItem:
+                strMpiLibs = MpiItem
+                print "MPI Libs path: ", strMpiLibs
+  
+              if "-l" in MpiItem:
+                strMpiLibrary = MpiItem 
+                print "MPI Library: ", strMpiLibrary
+
             options.append('-mpi')
-            #options.append('-cc=mpicc')
-            #options.append('-c++=mpicxx')
             options.append('-mpiinc=/packages/mpich2/3.1.4_gcc-4.9.2/include')
             options.append('-mpilib=/packages/mpich2/3.1.4_gcc-4.9.2/lib')
             options.append('-mpilibrary=-lmpi')

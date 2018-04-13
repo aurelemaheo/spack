@@ -178,25 +178,35 @@ class Tau(Package):
                   strMpiIncTmp += MpiItem[2:]
 
                 #strMpiInc.replace("-I","")
-                strMpiInc = '"' + strMpiIncTmp + '"'
+                #strMpiInc = '"' + strMpiIncTmp + '"'
+                strMpiInc =  strMpiIncTmp 
                 print "MPI Include: ", strMpiInc
 
               if "-L" in MpiItem:
-                if strMpiLibsTmp == "":
-                  strMpiLibsTmp = MpiItem[2:]
-                else:
-                  strMpiLibsTmp += " "
-                  strMpiLibsTmp += MpiItem[2:]
+                #if strMpiLibsTmp == "":
+                  #strMpiLibsTmp = MpiItem[2:]
+                #else:
+                  #print(" ".join(strMpiLibsTmp))
+                  #strMpiLibsTmp += " "
+                  #strMpiLibsTmp += MpiItem[2:]
+                  #os.system("echo "+ strMpiLibsTmp +" | sed -e 's/#/ /g'")
+                  #strMpiLibsTmp = os.popen("echo "+ strMpiLibsTmp +" | sed -e 's/#/ /g'").read()
 
-                strMpiLibs = '"' + strMpiLibsTmp + '"'
+                strMpiLibsTmp = MpiItem[2:]
+                strMpiLibs = strMpiLibsTmp 
                 print "MPI Libs path: ", strMpiLibs
   
               if "-l" in MpiItem:
                 strMpiLibraryTmp = MpiItem 
 
-                strMpiLibrary = '"' + strMpiLibraryTmp + '"'
+                #strMpiLibrary = '"' + strMpiLibraryTmp + '"'
+                strMpiLibrary = strMpiLibraryTmp
                 print "MPI Library: ", strMpiLibrary
 
+            #strMpiLibs = '"' + strMpiLibsTmp + '"'
+            #strMpiLibs = strMpiLibsTmp 
+            print "MPI Libs path: ", strMpiLibs
+ 
             options.append('-mpi')
             #options.append('-mpiinc=/packages/mpich2/3.1.4_gcc-4.9.2/include')
             options.append('-mpiinc='+strMpiInc)

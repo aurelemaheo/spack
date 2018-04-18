@@ -75,13 +75,15 @@ class Tau(Package):
     depends_on('likwid', when='+likwid')
     depends_on('binutils', when='~download')
     depends_on('libunwind', when='~download')
-    depends_on('mpi', when='+mpi')
+    depends_on('mpich', when='+mpi')
     depends_on('cuda', when='+cuda')
     depends_on('gasnet', when='+gasnet')
 
-    filter_compiler_wrappers(
-        'mpicc', 'mpicxx', 'mpif77', 'mpif90', 'mpifort', relative_root='bin'
-    )
+    #filter_compiler_wrappers(
+    #    'mpicc', 'mpicxx', 'mpif77', 'mpif90', 'mpifort', relative_root='bin'
+    #)
+
+    filter_compiler_wrappers('tau_cc.sh', 'Makefile.tau', relative_root='bin')
 
     def set_compiler_options(self):
 

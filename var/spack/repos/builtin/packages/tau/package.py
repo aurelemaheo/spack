@@ -168,6 +168,9 @@ class Tau(Package):
         if '+likwid' in spec:
             options.append("-likwid=%s" % spec['likwid'].prefix)
 
+        if '+papi' in spec:
+            options.append("-papi=%s" % spec['papi'].prefix)
+
         if '+openmp' in spec:
             options.append('-openmp')
 

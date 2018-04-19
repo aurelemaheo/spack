@@ -64,7 +64,19 @@ class Tau(Package):
     variant('cuda', default=False,
              description='Activates CUDA support')
     variant('beacon', default=False, description='Activates BEACON support')
-   
+  
+    # Check MPI implementation
+    strMpiImplOut = os.popen('which mpirun').read() 
+    MpiImpl = ""
+    if "mpich" in strMpiImplOut:
+      MpiImpl = 'mpich'
+    elif "mvapich2" in strMpiImplOut:
+      MpiImpl = 'mvapich2'
+    elif "openmpi" in strMpiImplOut:
+      MpiImpl = 'openmpi'
+    elif "intel" in strMpiImplOut:
+      MpiImpl = 'intel-mpi'
+
     # TODO : Try to build direct OTF2 support? Some parts of the OTF support
     # TODO : library in TAU are non-conformant,
     # TODO : and fail at compile-time. Further, SCOREP is compiled with OTF2
@@ -75,7 +87,7 @@ class Tau(Package):
     depends_on('likwid', when='+likwid')
     depends_on('binutils', when='~download')
     depends_on('libunwind', when='~download')
-    depends_on('mpich', when='+mpi')
+    depends_on(MpiImpl, when='+mpi')
     depends_on('cuda', when='+cuda')
     depends_on('gasnet', when='+gasnet')
 

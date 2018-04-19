@@ -49,6 +49,7 @@ class Tau(Package):
     variant('scorep', default=False, description='Activates SCOREP support')
     variant('otf', default=False, description='Activates support of Open Trace Format (OTF)')
     variant('likwid', default=False, description='Activates LIKWID support')
+    variant('papi', default=False, description='Activates Performance API')
     variant('openmp', default=False, description='Use OpenMP threads')
     variant('ompt', default=False, description='Activates OMPT instrumentation')
     variant('opari', default=False, description='Activates Opari2 instrumentation')
@@ -64,7 +65,8 @@ class Tau(Package):
     variant('cuda', default=False,
              description='Activates CUDA support')
     variant('beacon', default=False, description='Activates BEACON support')
-  
+    
+ 
     # Check MPI implementation
     strMpiImplOut = os.popen('which mpirun').read() 
     MpiImpl = ""

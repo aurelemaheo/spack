@@ -241,7 +241,7 @@ class Tau(Package):
             options.append('-gasnet')
 
         if '+cuda' in spec:
-            options.append('-cuda')
+            options.append("-cuda=%s" % spec['likwid'].prefix)
 
         if '+phase' in spec:
             options.append('-PROFILEPHASE')

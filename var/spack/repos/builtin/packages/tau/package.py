@@ -55,8 +55,8 @@ class Tau(Package):
     variant('opari', default=False, description='Activates Opari2 instrumentation')
     variant('mpi', default=True,
             description='Specify use of TAU MPI wrapper library')
-    variant('phase', default=True, description='Generate phase based profiles')
-    variant('comm', default=True,
+    variant('phase', default=False, description='Generate phase based profiles')
+    variant('comm', default=False,
             description=' Generate profiles with MPI communicator info')
     variant('shmem', default=False,
              description='Activates SHMEM support')

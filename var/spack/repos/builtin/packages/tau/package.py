@@ -238,7 +238,7 @@ class Tau(Package):
             options.append('-shmem')
 
         if '+gasnet' in spec:
-            options.append('-gasnet')
+            options.append('-gasnet=%s' % spec['gasnet'].prefix)
 
         if '+cuda' in spec:
             options.append("-cuda=%s" % spec['likwid'].prefix)

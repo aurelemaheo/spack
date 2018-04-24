@@ -26,7 +26,7 @@ from spack import *
 import os
 import glob
 from llnl.util.filesystem import join_path
-
+import subprocess as sp
 
 class Tau(Package):
     """A portable profiling and tracing toolkit for performance
@@ -68,8 +68,32 @@ class Tau(Package):
     
  
     # Check MPI implementation
-    strMpiImplOut = os.popen('which mpirun').read() 
-    MpiImpl = ""
+    #try:
+    #  mpirunOut = os.popen('which mpirun')
+    #except OSError as e:
+    #  print "OSError > ", e.errno
+    #  print "OSError > ", e.strerror
+   
+    mpiruncmd = "which mpirun" 
+    ret = sp.call(mpiruncmd, shell=True)
+    if ret != 0:
+      if ret < 0:
+        print "Killed by signal", ret
+        exit()
+      else:
+        print "Command failed with return code", ret
+        exit()
+    else:
+      print "SUCCESS"
+      #strMpiImplOut = sp.Popen(["which", "mpirun"],stdout=sp.PIPE)
+      #print p.communicate
+      
+    #strMpiImplOut = sp.Popen(["which", "mpirun"],stdout=sp.PIPE)
+    mpirunOut = os.popen('which mpirun')
+    #strMpiImplOut = os.popen('which mpirun').read() 
+    strMpiImplOut = mpirunOut.read()
+    #print "Mpi Impl out: ", strMpiImplOut
+      #MpiImpl = "mpich"
     if "mpich" in strMpiImplOut:
       MpiImpl = 'mpich'
     elif "mvapich2" in strMpiImplOut:
@@ -78,7 +102,9 @@ class Tau(Package):
       MpiImpl = 'openmpi'
     elif "intel" in strMpiImplOut:
       MpiImpl = 'intel-mpi'
-
+    #else:
+    #  MpiImpl = ""
+   
     # TODO : Try to build direct OTF2 support? Some parts of the OTF support
     # TODO : library in TAU are non-conformant,
     # TODO : and fail at compile-time. Further, SCOREP is compiled with OTF2
@@ -89,7 +115,8 @@ class Tau(Package):
     depends_on('likwid', when='+likwid')
     depends_on('binutils', when='~download')
     depends_on('libunwind', when='~download')
-    depends_on(MpiImpl, when='+mpi')
+    #depends_on(MpiImpl, when='+mpi')
+    depends_on("mpi", when='+mpi')
     depends_on('cuda', when='+cuda')
     depends_on('gasnet', when='+gasnet')
 

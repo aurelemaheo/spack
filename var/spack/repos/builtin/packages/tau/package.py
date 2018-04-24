@@ -27,6 +27,7 @@ import os
 import glob
 from llnl.util.filesystem import join_path
 import subprocess as sp
+import json
 
 class Tau(Package):
     """A portable profiling and tracing toolkit for performance
@@ -53,7 +54,7 @@ class Tau(Package):
     variant('openmp', default=False, description='Use OpenMP threads')
     variant('ompt', default=False, description='Activates OMPT instrumentation')
     variant('opari', default=False, description='Activates Opari2 instrumentation')
-    variant('mpi', default=True,
+    variant('mpi', default=False,
             description='Specify use of TAU MPI wrapper library')
     variant('phase', default=False, description='Generate phase based profiles')
     variant('comm', default=False,
@@ -77,35 +78,49 @@ class Tau(Package):
     mpiruncmd = "which mpirun" 
     ret = sp.call(mpiruncmd, shell=True)
     if ret != 0:
-      if ret < 0:
-        print "Killed by signal", ret
-        exit()
-      else:
-        print "Command failed with return code", ret
-        exit()
+      print "mpirun does not exist - reading from JSON file"
+      strmpijson = ""
+      with open('/dev/shm/mpi.json') as mpi_file:
+        data = json.load(mpi_file)
+      print(data)
+      strmpijson = data["mpi"]
+
+      if "mpich" in strmpijson:
+        print "mpich in JSON file"
+        MpiImpl = 'mpich'
+      elif "mvapich2" in strmpijson:
+        print "mvapich2 in JSON file"
+        MpiImpl = 'mvapich2'
+      elif "openmpi" in strmpijson:
+        print "openmpi in JSON file"
+        MpiImpl = 'openmpi'
+      elif "intel" in strmpijson:
+        print "IntelMpi in JSON file"
+        MpiImpl = 'intel-mpi'
+
     else:
-      print "SUCCESS"
+      print "mpirun exists"
       #strMpiImplOut = sp.Popen(["which", "mpirun"],stdout=sp.PIPE)
       #print p.communicate
       
-    #strMpiImplOut = sp.Popen(["which", "mpirun"],stdout=sp.PIPE)
-    mpirunOut = os.popen('which mpirun')
-    #strMpiImplOut = os.popen('which mpirun').read() 
-    strMpiImplOut = mpirunOut.read()
-    #print "Mpi Impl out: ", strMpiImplOut
+      #strMpiImplOut = sp.Popen(["which", "mpirun"],stdout=sp.PIPE)
+      mpirunOut = os.popen('which mpirun')
+      #strMpiImplOut = os.popen('which mpirun').read() 
+      strMpiImplOut = mpirunOut.read()
+      #print "Mpi Impl out: ", strMpiImplOut
       #MpiImpl = "mpich"
-    if "mpich" in strMpiImplOut:
-      MpiImpl = 'mpich'
-    elif "mvapich2" in strMpiImplOut:
-      MpiImpl = 'mvapich2'
-    elif "openmpi" in strMpiImplOut:
-      MpiImpl = 'openmpi'
-    elif "intel" in strMpiImplOut:
-      MpiImpl = 'intel-mpi'
-    #else:
-    #  MpiImpl = ""
-   
-    # TODO : Try to build direct OTF2 support? Some parts of the OTF support
+      if "mpich" in strMpiImplOut:
+        MpiImpl = 'mpich'
+      elif "mvapich2" in strMpiImplOut:
+        MpiImpl = 'mvapich2'
+      elif "openmpi" in strMpiImplOut:
+        MpiImpl = 'openmpi'
+      elif "intel" in strMpiImplOut:
+        MpiImpl = 'intel-mpi'
+      #else:
+      #  MpiImpl = ""
+
+        # TODO : Try to build direct OTF2 support? Some parts of the OTF support
     # TODO : library in TAU are non-conformant,
     # TODO : and fail at compile-time. Further, SCOREP is compiled with OTF2
     # support.
@@ -115,7 +130,7 @@ class Tau(Package):
     depends_on('likwid', when='+likwid')
     depends_on('binutils', when='~download')
     depends_on('libunwind', when='~download')
-    #depends_on(MpiImpl, when='+mpi')
+    depends_on(MpiImpl, when='+mpi')
     depends_on("mpi", when='+mpi')
     depends_on('cuda', when='+cuda')
     depends_on('gasnet', when='+gasnet')

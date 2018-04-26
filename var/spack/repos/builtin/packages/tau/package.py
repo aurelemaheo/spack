@@ -50,7 +50,7 @@ class Tau(Package):
     variant('scorep', default=False, description='Activates SCOREP support')
     variant('otf', default=False, description='Activates support of Open Trace Format (OTF)')
     variant('likwid', default=False, description='Activates LIKWID support')
-    variant('papi', default=False, description='Activates Performance API')
+    #variant('papi', default=False, description='Activates Performance API')
     variant('openmp', default=False, description='Use OpenMP threads')
     variant('ompt', default=False, description='Activates OMPT instrumentation')
     variant('opari', default=False, description='Activates Opari2 instrumentation')
@@ -210,8 +210,8 @@ class Tau(Package):
         if '+likwid' in spec:
             options.append("-likwid=%s" % spec['likwid'].prefix)
 
-        if '+papi' in spec:
-            options.append("-papi=%s" % spec['papi'].prefix)
+        #if '+papi' in spec:
+        #    options.append("-papi=%s" % spec['papi'].prefix)
 
         if '+openmp' in spec:
             options.append('-openmp')

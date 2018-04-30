@@ -50,7 +50,7 @@ class Tau(Package):
     variant('scorep', default=False, description='Activates SCOREP support')
     variant('otf', default=False, description='Activates support of Open Trace Format (OTF)')
     variant('likwid', default=False, description='Activates LIKWID support')
-    #variant('papi', default=False, description='Activates Performance API')
+    variant('papi', default=False, description='Activates Performance API')
     variant('openmp', default=False, description='Use OpenMP threads')
     variant('ompt', default=False, description='Activates OMPT instrumentation')
     variant('opari', default=False, description='Activates Opari2 instrumentation')
@@ -128,6 +128,7 @@ class Tau(Package):
     depends_on('scorep', when='+scorep')
     depends_on('otf2@2.1', when='+otf')
     depends_on('likwid', when='+likwid')
+    depends_on('papi', when='+papi')
     depends_on('binutils', when='~download')
     depends_on('libunwind', when='~download')
     depends_on(MpiImpl, when='+mpi')
@@ -210,8 +211,8 @@ class Tau(Package):
         if '+likwid' in spec:
             options.append("-likwid=%s" % spec['likwid'].prefix)
 
-        #if '+papi' in spec:
-        #    options.append("-papi=%s" % spec['papi'].prefix)
+        if '+papi' in spec:
+            options.append("-papi=%s" % spec['papi'].prefix)
 
         if '+openmp' in spec:
             options.append('-openmp')
@@ -283,7 +284,7 @@ class Tau(Package):
             options.append('-gasnet=%s' % spec['gasnet'].prefix)
 
         if '+cuda' in spec:
-            options.append("-cuda=%s" % spec['likwid'].prefix)
+            options.append("-cuda=%s" % spec['cuda'].prefix)
 
         if '+phase' in spec:
             options.append('-PROFILEPHASE')

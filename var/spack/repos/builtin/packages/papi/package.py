@@ -55,7 +55,7 @@ class Papi(Package):
             # PAPI uses MPI if MPI is present; since we don't require
             # an MPI package, we ensure that all attempts to use MPI
             # fail, so that PAPI does not get confused
-            configure_args.append('MPICC=:')
+            #configure_args.append('MPICC=:')
 
             configure(*configure_args)
 

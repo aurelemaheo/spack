@@ -17,6 +17,9 @@ modules:
   enable:
     - tcl
     - dotkit
+  tcl:
+    hash_length: 0
+    naming_scheme: '${PACKAGE}/${VERSION}-${COMPILERNAME}-${COMPILERVER}'
   prefix_inspections:
     bin:
       - PATH
@@ -44,3 +47,8 @@ modules:
   lmod:
     hierarchy:
       - mpi
+  #all:
+  #  suffixes:
+  #    '^openmpi': openmpi
+  #    '^mpich': mpich
+  #    '^papi': papi

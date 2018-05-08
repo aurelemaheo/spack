@@ -36,8 +36,9 @@ class Tau(Package):
     """
     
     homepage = "http://www.cs.uoregon.edu/research/tau"
-    url      = "https://www.cs.uoregon.edu/research/tau/tau_releases/tau-2.27.tar.gz"
+    url      = "https://www.cs.uoregon.edu/research/tau/tau_releases/tau-2.27.1.tar.gz"
 
+    version('2.27.1', '5df78d21849f5b00c192bcbfdefb32cc')
     version('2.27', '76602d35fc96f546b5b9dcaf09158651')
     version('2.25', '46cd48fa3f3c4ce0197017b3158a2b43')
     version('2.24.1', '6635ece6d1f08215b02f5d0b3c1e971b')
@@ -49,12 +50,14 @@ class Tau(Package):
             description='Downloads and builds various dependencies')
     variant('scorep', default=False, description='Activates SCOREP support')
     variant('otf', default=False, description='Activates support of Open Trace Format (OTF)')
+    variant('binutils', default=False, description='Activates support of BFD GNU Binutils')
+    variant('libunwind', default=False, description='Activates support of libunwind')
     variant('likwid', default=False, description='Activates LIKWID support')
-    variant('papi', default=False, description='Activates Performance API')
+    variant('papi', default=True, description='Activates Performance API')
     variant('openmp', default=False, description='Use OpenMP threads')
     variant('ompt', default=False, description='Activates OMPT instrumentation')
     variant('opari', default=False, description='Activates Opari2 instrumentation')
-    variant('mpi', default=False,
+    variant('mpi', default=True,
             description='Specify use of TAU MPI wrapper library')
     variant('phase', default=False, description='Generate phase based profiles')
     variant('comm', default=False,
@@ -129,7 +132,9 @@ class Tau(Package):
     depends_on('otf2@2.1', when='+otf')
     depends_on('likwid', when='+likwid')
     depends_on('papi', when='+papi')
-    depends_on('binutils', when='~download')
+    #depends_on('binutils', when='~download')
+    depends_on('gettext')
+    depends_on('binutils@2.27+libiberty')
     depends_on('libunwind', when='~download')
     depends_on(MpiImpl, when='+mpi')
     depends_on("mpi", when='+mpi')
@@ -194,19 +199,36 @@ class Tau(Package):
                    "-iowrapper",
                    "-pdt=%s" % spec['pdt'].prefix]
         # If download is active, download and build suggested dependencies
-        if '+download' in spec:
-            options.extend(['-bfd=download'])
-            options.extend(['-unwind=download'])
-        else:
-            options.extend(["-bfd=%s" % spec['binutils'].prefix])
-            options.extend(["-unwind=%s" % spec['libunwind'].prefix])
-            # TODO : unwind and asmdex are still missing
+
+#	 print "export SPACK_PREFIX=",os.environ['SPACK_PREFIX']
+#        print "export SPACK_ENV_PATH=",os.environ['SPACK_ENV_PATH']
+#        print "export SPACK_DEBUG_LOG_DIR=",os.environ['SPACK_DEBUG_LOG_DIR']
+#        print "export SPACK_DEBUG_LOG_ID=",os.environ['SPACK_DEBUG_LOG_ID']
+#        print "export SPACK_COMPILER_SPEC=",os.environ['SPACK_COMPILER_SPEC']
+#        print "export SPACK_CC_RPATH_ARG=",os.environ['SPACK_CC_RPATH_ARG']
+#        print "export SPACK_CXX_RPATH_ARG=",os.environ['SPACK_CXX_RPATH_ARG']
+#        print "export SPACK_F77_RPATH_ARG=",os.environ['SPACK_F77_RPATH_ARG']
+#        print "export SPACK_FC_RPATH_ARG=",os.environ['SPACK_FC_RPATH_ARG']
+#        print "export SPACK_SHORT_SPEC=",os.environ['SPACK_SHORT_SPEC']
+
+        options.extend(["-bfd=%s" % spec['binutils'].prefix])
+        #options.extend(["-bfd=/home/users/sameer/tau-2.27.1/x86_64/binutils-2.23.2"])
+        #options.extend(["-unwind=%s" % spec['libunwind'].prefix])
+	#if '+binutils' in spec:
+        #    options.extend(["-bfd=%s" % spec['binutils'].prefix])
+        #else:
+        #    options.extend(['-bfd=download'])
+	#if '+libunwind' in spec:
+        #    options.extend(["-unwind=%s" % spec['libunwind'].prefix])
+        #else:
+        #    options.extend(['-unwind=download'])
+	#if '+otf' in spec:
+        #    options.extend(["-otf=%s" % spec['otf'].prefix])
+        #else:
+        #    options.extend(['-otf=download'])
 
         if '+scorep' in spec:
             options.append("-scorep=%s" % spec['scorep'].prefix)
-
-        if '+otf' in spec:
-            options.append("-otf=%s" % spec['otf2'].prefix)
 
         if '+likwid' in spec:
             options.append("-likwid=%s" % spec['likwid'].prefix)
@@ -275,7 +297,9 @@ class Tau(Package):
             #options.append('-mpilib=/packages/mpich2/3.1.4_gcc-4.9.2/lib')
             options.append('-mpilib='+strMpiLibs)
             #options.append('-mpilibrary=-lmpi')
-            options.append('-mpilibrary='+strMpiLibrary)
+            #options.append('-mpilibrary='+strMpiLibrary)
+            libintl=spec['gettext'].prefix+'/lib'
+            options.append('-mpilibrary='+strMpiLibrary+' -L'+libintl+' -Wl,-rpath,'+libintl)
 
         if '+shmem' in spec:
             options.append('-shmem')

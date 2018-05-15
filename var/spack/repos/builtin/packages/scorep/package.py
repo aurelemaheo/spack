@@ -63,7 +63,8 @@ class Scorep(AutotoolsPackage):
     depends_on("cube@4.2.3", when='@1.3')
     ##########
 
-    depends_on("mpi")
+    #depends_on("mpi")
+    depends_on("mvapich2")
     depends_on("papi")
     depends_on('pdt')
 

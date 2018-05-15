@@ -38,7 +38,7 @@ class Tau(Package):
     homepage = "http://www.cs.uoregon.edu/research/tau"
     url      = "https://www.cs.uoregon.edu/research/tau/tau_releases/tau-2.27.1.tar.gz"
 
-    version('2.27.1', '5df78d21849f5b00c192bcbfdefb32cc')
+    version('2.27.1', 'cb7f07f2c685b54331aebd1e56cd1ce0')
     version('2.27', '76602d35fc96f546b5b9dcaf09158651')
     version('2.25', '46cd48fa3f3c4ce0197017b3158a2b43')
     version('2.24.1', '6635ece6d1f08215b02f5d0b3c1e971b')
@@ -137,7 +137,7 @@ class Tau(Package):
     depends_on('binutils@2.27+libiberty')
     depends_on('libunwind', when='~download')
     depends_on(MpiImpl, when='+mpi')
-    depends_on("mpi", when='+mpi')
+    #depends_on("mpi", when='+mpi')
     depends_on('cuda', when='+cuda')
     depends_on('gasnet', when='+gasnet')
 

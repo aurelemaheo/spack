@@ -134,14 +134,11 @@ class Tau(Package):
     depends_on('papi', when='+papi')
     #depends_on('binutils', when='~download')
     depends_on('gettext')
-    depends_on('binutils@2.27+libiberty')
+    #depends_on('binutils@2.27+libiberty')
+    depends_on('binutils@2.23.2+libiberty')
     depends_on('libunwind', when='~download')
     depends_on(MpiImpl, when='+mpi')
-<<<<<<< HEAD
     #depends_on("mpi", when='+mpi')
-=======
-    depends_on("mpi", when='+mpi')
->>>>>>> 1c7782a2235d7fb69e8187cb3d033073f8011559
     depends_on('cuda', when='+cuda')
     depends_on('gasnet', when='+gasnet')
 

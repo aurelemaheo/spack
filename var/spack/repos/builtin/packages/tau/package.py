@@ -38,7 +38,7 @@ class Tau(Package):
     homepage = "http://www.cs.uoregon.edu/research/tau"
     url      = "https://www.cs.uoregon.edu/research/tau/tau_releases/tau-2.27.1.tar.gz"
 
-    version('2.27.1', 'cb7f07f2c685b54331aebd1e56cd1ce0')
+    version('2.27.1', '4f98ff67ae5ab1ff2712f694bdec1fa9')
     version('2.27', '76602d35fc96f546b5b9dcaf09158651')
     version('2.25', '46cd48fa3f3c4ce0197017b3158a2b43')
     version('2.24.1', '6635ece6d1f08215b02f5d0b3c1e971b')
@@ -134,8 +134,8 @@ class Tau(Package):
     depends_on('papi', when='+papi')
     #depends_on('binutils', when='~download')
     depends_on('gettext')
-    #depends_on('binutils@2.27+libiberty')
-    depends_on('binutils@2.23.2+libiberty')
+    depends_on('binutils@2.27+libiberty')
+    #depends_on('binutils@2.23.2+libiberty')
     depends_on('libunwind', when='~download')
     depends_on(MpiImpl, when='+mpi')
     #depends_on("mpi", when='+mpi')
@@ -301,6 +301,7 @@ class Tau(Package):
             #options.append('-mpilibrary='+strMpiLibrary)
             libintl=spec['gettext'].prefix+'/lib'
             options.append('-mpilibrary='+strMpiLibrary+' -L'+libintl+' -Wl,-rpath,'+libintl)
+            options.append('-fortran=gfortran')
 
         if '+shmem' in spec:
             options.append('-shmem')
